@@ -2,8 +2,31 @@
 image: openjdk:11-jdk-slim
 
 stages:
+  - build
   - test
   - deploy
+
+build:
+  stage: build
+  script:
+    - ./gradlew assemble
+  only:
+    changes:
+      - "*.gradle"
+      - gradle.properties
+  cache:
+    key: gradle-cache-key
+    paths:
+      - .gradle/wrapper
+      - .gradle/caches
+    policy: push
+
+cache:
+  key: gradle-cache-key
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+  policy: pull
 
 test:
   stage: test
